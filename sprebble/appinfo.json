@@ -1,0 +1,17 @@
+{
+  "uuid": "5901b974-bea9-45c5-bcba-81658d112f01",
+  "shortName": "sprebble",
+  "longName": "sprebble",
+  "companyName": "VA2J",
+  "versionCode": 1,
+  "versionLabel": "1.0.0",
+  "watchapp": {
+    "watchface": false
+  },
+  "appKeys": {
+    "dummy": 0
+  },
+  "resources": {
+    "media": []
+  }
+}
