@@ -22,7 +22,12 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <service android:name="SprebbleService" android:label="@string/service_name" android:exported="false">
+        <service
+            android:name="edu.virginia.cs.va2j.SprebbleService"
+            android:label="@string/service_name"
+            android:description="@string/service_name"
+            android:permission="android.permission.BIND_ACCESSIBILITY_SERVICE"
+            android:exported="false">
             <intent-filter>
                 <action android:name="android.accessibilityservice.AccessibilityService"/>
             </intent-filter>
