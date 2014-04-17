@@ -8,8 +8,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import com.getpebble.android.kit.Constants;
-
 import android.accessibilityservice.AccessibilityService;
 import android.accessibilityservice.AccessibilityServiceInfo;
 import android.annotation.TargetApi;
@@ -96,6 +94,7 @@ public class SprebbleService extends AccessibilityService {
             }
         }
 		
+		sendToPebble(title, notificationText);
 		
 	}
 
