@@ -2,6 +2,7 @@ package edu.virginia.cs.va2j;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.regex.Pattern;
 
 import org.json.JSONArray;
@@ -24,6 +25,7 @@ import android.view.accessibility.AccessibilityEvent;
 import android.widget.RemoteViews;
 import android.widget.TextView;
 
+import com.getpebble.android.kit.*;
 
 public class SprebbleService extends AccessibilityService {
 	
@@ -33,6 +35,9 @@ public class SprebbleService extends AccessibilityService {
     // Pebble specific items
     public static final String PEBBLE_MESSAGE_TYPE_ALERT = "PEBBLE_ALERT";
 	
+    // Our UUID
+    public static final UUID app_uuid = UUID.fromString("5901b974-bea9-45c5-bcba-81658d112f01");
+    
 	private JSONArray converts = new JSONArray();
 	private long notification_last_sent = 0;
 	
@@ -94,7 +99,12 @@ public class SprebbleService extends AccessibilityService {
             }
         }
 		
+		// Launch our pebble app
+		PebbleKit.startAppOnPebble(this.getApplicationContext(), app_uuid);
+		
+		/*
 		sendToPebble(title, notificationText);
+		*/
 		
 	}
 
