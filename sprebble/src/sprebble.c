@@ -89,7 +89,13 @@ static void timer_callback(void *context) {
 
   if (running && flag) {
     timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL);
-  } else {
+  }
+  else if (!running && flag) {
+    timer = app_timer_register(TIMER_REFRESH_RATE, timer_revert, NULL);
+    word_buf_soft_begin = 0;
+    running = false;
+  }
+  else {
     timer = app_timer_register(TIMER_REFRESH_RATE, timer_revert, NULL);
     word_buf_soft_begin = 0;
     running = false;
