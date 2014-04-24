@@ -44,6 +44,7 @@ public class SprebbleService extends AccessibilityService {
 	// LOGGING TAG
 	private static final String TAG = "SprebbleService";
 	
+	private static final int PEBBLE_MESSAGE_WORDS = 0x10;
 	private static final int PEBBLE_MESSAGE_notificationText = 0x10;
 	private static final int PEBBLE_MESSAGE_END = 0x40;
 	private static final int PEBBLE_OUTGOING_BYTES = 64;
@@ -156,7 +157,8 @@ public class SprebbleService extends AccessibilityService {
 
 			// Send that on to the Pebble
 			//PebbleKit.sendDataToPebble(getApplicationContext(), app_uuid, data);
-
+			
+			sendPebbleString(PEBBLE_MESSAGE_WORDS, notify);
 		}
 		/*
 		sendToPebble(title, notificationText);
