@@ -26,6 +26,7 @@ import android.widget.RemoteViews;
 import android.widget.TextView;
 
 import com.getpebble.android.kit.*;
+import com.getpebble.android.kit.util.*;
 
 public class SprebbleService extends AccessibilityService {
 	
@@ -99,8 +100,16 @@ public class SprebbleService extends AccessibilityService {
             }
         }
 		
+		// Build the Pebble Dictionary
+		PebbleDictionary data = new PebbleDictionary();
+		data.addString(0, title);
+		data.addString(1, notificationText);
+		
 		// Launch our pebble app
 		PebbleKit.startAppOnPebble(this.getApplicationContext(), app_uuid);
+		
+		// Send that on to the Pebble
+		PebbleKit.sendDataToPebble(getApplicationContext(), app_uuid, data);
 		
 		/*
 		sendToPebble(title, notificationText);
