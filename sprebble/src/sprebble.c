@@ -73,7 +73,7 @@ static void timer_revert(void *content) {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "REVERTING... (%g)", time_counter);
   if (time_counter > 60.0 / speed) {
     update_speed();
-    window_set_click_config_provider(window, click_config_provider);
+//    window_set_click_config_provider(window, click_config_provider);
   }
   else timer = app_timer_register(TIMER_REFRESH_RATE, timer_revert, NULL);
 }
@@ -99,7 +99,7 @@ static void timer_callback(void *context) {
 static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
   if (loaded) {
     if (!running && word_buf_soft_begin == 0) {
-      window_set_click_config_provider(window, click_config_clear);
+//      window_set_click_config_provider(window, click_config_clear);
       ind = 0;
       time_counter = 0;
       word_buf_soft_begin = 0;
