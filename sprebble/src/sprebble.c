@@ -78,6 +78,15 @@ static void timer_revert(void *content) {
   else timer = app_timer_register(TIMER_REFRESH_RATE, timer_revert, NULL);
 }
 
+static void timer_pause(void *content) {
+  time_counter += TIMER_REFRESH_SECONDS;
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "REVERTING... (%g)", time_counter);
+  if (time_counter > 60.0 / speed) {
+
+//    window_set_click_config_provider(window, click_config_provider);
+  }
+  else timer = app_timer_register(TIMER_REFRESH_RATE, timer_revert, NULL);
+}
 
 static void timer_callback(void *context) {
   time_counter += TIMER_REFRESH_SECONDS;
@@ -91,7 +100,7 @@ static void timer_callback(void *context) {
     timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL);
   }
   else if (!running && flag) {
-    timer = app_timer_register(TIMER_REFRESH_RATE, timer_revert, NULL);
+    timer = app_timer_register(TIMER_REFRESH_RATE, timer_pause, NULL);
     running = false;
   }
   else {
