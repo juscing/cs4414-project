@@ -85,7 +85,7 @@ static void timer_pause(void *content) {
 
 //    window_set_click_config_provider(window, click_config_provider);
   }
-  else timer = app_timer_register(TIMER_REFRESH_RATE, timer_revert, NULL);
+  else timer = app_timer_register(TIMER_REFRESH_RATE, timer_pause, NULL);
 }
 
 static void timer_callback(void *context) {
