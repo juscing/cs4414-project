@@ -170,7 +170,7 @@ static void in_received_handler(DictionaryIterator *iter, void *context) {
 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a message!");
   if(first) {
-    vibes_short_pulse(void);
+    vibes_short_pulse();
   } else {
       first = false;
   }
