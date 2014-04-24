@@ -124,7 +124,6 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
       timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL);
     }
     else if (!running) {
-      display_next_word();
       running = true;
       timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL); 
     }
