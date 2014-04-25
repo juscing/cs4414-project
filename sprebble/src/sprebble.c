@@ -67,9 +67,9 @@ static bool display_next_word() {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "PRINTING[%i :]... %s (%g)", word_buf_soft_begin, tmp_buf, time_counter);
   text_layer_set_text(text_layer, tmp_buf);
 
-  char speed[3]; 
+  char str_speed[3]; 
   itoa(i, str, 10); // 10 - decimal; 
-  text_layer_set_text(speed_layer, speed);
+  text_layer_set_text(speed_layer, str_speed);
 
   if (word_buf_soft_begin >= word_buf_end) return false;
   return true;
