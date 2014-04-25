@@ -17,6 +17,8 @@
 
 static Window *window;
 static TextLayer *text_layer;
+static TextLayer *speed_layer;
+static TextLayer *progress_layer;
 //static char* cstr[] = {"Select", "Up", "Down"};
 static int speed = SPEED_DEFAULT;
 static bool loaded = false;
@@ -64,6 +66,11 @@ static bool display_next_word() {
   tmp_buf[i] = '\0';
   APP_LOG(APP_LOG_LEVEL_DEBUG, "PRINTING[%i :]... %s (%g)", word_buf_soft_begin, tmp_buf, time_counter);
   text_layer_set_text(text_layer, tmp_buf);
+
+  char speed[3]; 
+  itoa(i, str, 10); // 10 - decimal; 
+  text_layer_set_text(speed_layer, speed);
+
   if (word_buf_soft_begin >= word_buf_end) return false;
   return true;
 }
@@ -122,7 +129,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
       timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL);
     }
     else if (!running) {
-      running = true;
+      csrunning = true;
       timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL); 
     }
     else {
@@ -158,9 +165,15 @@ static void window_load(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
 
   text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 40 } });
+  speed_layer = text_layer_create((GRect) { .origin = { 0, 85}, .size = {bounds.size.w, 40} });
+  progress_layer = text_layer_create((GRect) { .origin = { 0, 10}, .size = {bounds.size.w, 40} });
   update_speed();
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
+  text_layer_set_text_alignment(text_layer, GTextAlignmentRight);
+  text_layer_set_text_alignment(text_layer, GTextAlignmentRight);
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
+  layer_add_child(window_layer, text_layer_get_layer(speed_layer));
+  layer_add_child(window_layer, text_layer_get_layer(progress_layer));
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
@@ -204,6 +217,9 @@ static void in_dropped_handler(AppMessageResult reason, void *context) {
 
 static void window_unload(Window *window) {
   text_layer_destroy(text_layer);
+  text_layer_destroy(speed_layer);
+  text_layer_destroy(progress_layer);
+
 }
 
 static void init(void) {
