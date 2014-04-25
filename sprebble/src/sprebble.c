@@ -37,6 +37,8 @@ static char tmp_buf[WORD_BUF_SIZE];
 static void click_config_clear(void *);
 static void click_config_provider(void *);
 
+static bool first = true;
+
 static void update_speed() {
   static char t[100];
   if (loaded) {
@@ -179,6 +181,11 @@ static void window_load(Window *window) {
 static void in_received_handler(DictionaryIterator *iter, void *context) {
 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a message!");
+  if(first) {
+    vibes_short_pulse();
+  } else {
+      first = false;
+  }
   // Check for fields you expect to receive
   Tuple *tuple = dict_read_first(iter);
   do
