@@ -173,12 +173,12 @@ static void window_load(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
 
   text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 40 } });
-  speed_layer = text_layer_create((GRect) { .origin = { 0, 85}, .size = {bounds.size.w, 40} });
+  speed_layer = text_layer_create((GRect) { .origin = { 0, 130}, .size = {bounds.size.w, 40} });
   progress_layer = text_layer_create((GRect) { .origin = { 0, 10}, .size = {bounds.size.w, 40} });
   update_speed();
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
-  text_layer_set_text_alignment(text_layer, GTextAlignmentRight);
-  text_layer_set_text_alignment(text_layer, GTextAlignmentRight);
+  text_layer_set_text_alignment(text_layer, GTextAlignmentLeft);
+  text_layer_set_text_alignment(text_layer, GTextAlignmentLeft);
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
   layer_add_child(window_layer, text_layer_get_layer(speed_layer));
   layer_add_child(window_layer, text_layer_get_layer(progress_layer));
