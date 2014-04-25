@@ -18,7 +18,7 @@
 static Window *window;
 static TextLayer *text_layer;
 static TextLayer *speed_layer;
-static TextLayer *progress_layer;
+//static TextLayer *progress_layer;
 //static char* cstr[] = {"Select", "Up", "Down"};
 static int speed = SPEED_DEFAULT;
 static bool loaded = false;
@@ -75,9 +75,9 @@ static bool display_next_word() {
   snprintf(speed_buf, sizeof(speed_buf), "%u", speed); // 10 - decimal; 
   text_layer_set_text(speed_layer, speed_buf);
 
-  static char progress_buf[20];
-  snprintf(progress_buf, sizeof(progress_buf), "%u/%u", i,word_buf_end); // 10 - decimal; 
-  text_layer_set_text(progress_layer, progress_buf);  
+  // static char progress_buf[20];
+  // snprintf(progress_buf, sizeof(progress_buf), "%u/%u", i,word_buf_end); // 10 - decimal; 
+  // text_layer_set_text(progress_layer, progress_buf);  
 
   if (word_buf_soft_begin >= word_buf_end) return false;
   return true;
@@ -174,14 +174,14 @@ static void window_load(Window *window) {
 
   text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 40 } });
   speed_layer = text_layer_create((GRect) { .origin = { 0, 130}, .size = {bounds.size.w, 40} });
-  progress_layer = text_layer_create((GRect) { .origin = { 0, 10}, .size = {bounds.size.w, 40} });
+//  progress_layer = text_layer_create((GRect) { .origin = { 0, 10}, .size = {bounds.size.w, 40} });
   update_speed();
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
-  text_layer_set_text_alignment(text_layer, GTextAlignmentLeft);
-  text_layer_set_text_alignment(text_layer, GTextAlignmentLeft);
+  text_layer_set_text_alignment(speed_layer, GTextAlignmentRight);
+//  text_layer_set_text_alignment(progress_layer, GTextAlignmentRight);
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
   layer_add_child(window_layer, text_layer_get_layer(speed_layer));
-  layer_add_child(window_layer, text_layer_get_layer(progress_layer));
+//  layer_add_child(window_layer, text_layer_get_layer(progress_layer));
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
