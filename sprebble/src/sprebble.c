@@ -34,10 +34,12 @@ static int word_buf_end = 0;
 static int word_buf_soft_begin = 0;
 static char tmp_buf[WORD_BUF_SIZE];
 
+
 static void click_config_clear(void *);
 static void click_config_provider(void *);
 
 static bool first = true;
+
 
 static void update_speed() {
   static char t[100];
@@ -69,9 +71,13 @@ static bool display_next_word() {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "PRINTING[%i :]... %s (%g)", word_buf_soft_begin, tmp_buf, time_counter);
   text_layer_set_text(text_layer, tmp_buf);
 
-  char str_speed[3]; 
-  itoa(i, str, 10); // 10 - decimal; 
-  text_layer_set_text(speed_layer, str_speed);
+  static char speed_buf[4];
+  snprintf(speed_buf, sizeof(speed_buf), "%u", speed); // 10 - decimal; 
+  text_layer_set_text(speed_layer, speed_buf);
+
+  static char progress_buf[20];
+  snprintf(progress_buf, sizeof(progress_buf), "%u/%u", i,word_buf_end); // 10 - decimal; 
+  text_layer_set_text(progress_layer, progress_buf);  
 
   if (word_buf_soft_begin >= word_buf_end) return false;
   return true;
@@ -131,7 +137,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
       timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL);
     }
     else if (!running) {
-      csrunning = true;
+      running = true;
       timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL); 
     }
     else {
