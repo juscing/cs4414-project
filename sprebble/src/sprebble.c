@@ -17,6 +17,8 @@
 
 static Window *window;
 static TextLayer *text_layer;
+static TextLayer *speed_layer;
+static TextLayer *progress_layer;
 //static char* cstr[] = {"Select", "Up", "Down"};
 static int speed = SPEED_DEFAULT;
 static bool loaded = false;
@@ -32,10 +34,12 @@ static int word_buf_end = 0;
 static int word_buf_soft_begin = 0;
 static char tmp_buf[WORD_BUF_SIZE];
 
+
 static void click_config_clear(void *);
 static void click_config_provider(void *);
 
 static bool first = true;
+
 
 static void update_speed() {
   static char t[100];
@@ -66,6 +70,15 @@ static bool display_next_word() {
   tmp_buf[i] = '\0';
   APP_LOG(APP_LOG_LEVEL_DEBUG, "PRINTING[%i :]... %s (%g)", word_buf_soft_begin, tmp_buf, time_counter);
   text_layer_set_text(text_layer, tmp_buf);
+
+  static char speed_buf[4];
+  snprintf(speed_buf, sizeof(speed_buf), "%u", speed); // 10 - decimal; 
+  text_layer_set_text(speed_layer, speed_buf);
+
+  static char progress_buf[20];
+  snprintf(progress_buf, sizeof(progress_buf), "%u/%u", i,word_buf_end); // 10 - decimal; 
+  text_layer_set_text(progress_layer, progress_buf);  
+
   if (word_buf_soft_begin >= word_buf_end) return false;
   return true;
 }
@@ -160,9 +173,15 @@ static void window_load(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
 
   text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 40 } });
+  speed_layer = text_layer_create((GRect) { .origin = { 0, 85}, .size = {bounds.size.w, 40} });
+  progress_layer = text_layer_create((GRect) { .origin = { 0, 10}, .size = {bounds.size.w, 40} });
   update_speed();
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
+  text_layer_set_text_alignment(text_layer, GTextAlignmentRight);
+  text_layer_set_text_alignment(text_layer, GTextAlignmentRight);
   layer_add_child(window_layer, text_layer_get_layer(text_layer));
+  layer_add_child(window_layer, text_layer_get_layer(speed_layer));
+  layer_add_child(window_layer, text_layer_get_layer(progress_layer));
 }
 
 static void in_received_handler(DictionaryIterator *iter, void *context) {
@@ -211,6 +230,9 @@ static void in_dropped_handler(AppMessageResult reason, void *context) {
 
 static void window_unload(Window *window) {
   text_layer_destroy(text_layer);
+  text_layer_destroy(speed_layer);
+  text_layer_destroy(progress_layer);
+
 }
 
 static void init(void) {
