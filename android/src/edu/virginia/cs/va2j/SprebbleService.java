@@ -104,7 +104,7 @@ public class SprebbleService extends AccessibilityService {
 		// Build an intent and send it to the other service
 		Intent intent = new Intent(this, SendToPebbleService.class);
 		intent.putExtra("notify", notificationText);
-
+		startService(intent);
 	}
 	
 	

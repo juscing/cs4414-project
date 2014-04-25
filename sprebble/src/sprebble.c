@@ -231,7 +231,7 @@ static void in_dropped_handler(AppMessageResult reason, void *context) {
 static void window_unload(Window *window) {
   text_layer_destroy(text_layer);
   text_layer_destroy(speed_layer);
-  text_layer_destroy(progress_layer);
+//  text_layer_destroy(progress_layer);
 
 }
 
