@@ -3,7 +3,7 @@
 #define SPEED_PKEY 1
 #define SPEED_DEFAULT 300.0
 #define MIN_SPEED 200.0
-#define MAX_SPEED 800.0
+#define MAX_SPEED 500.0
 #define SPEED_SKIP 25.0
 #define TIMER_REFRESH_RATE 10.0
 #define TIMER_REFRESH_SECONDS .01
@@ -38,22 +38,24 @@ static char tmp_buf[WORD_BUF_SIZE];
 static void click_config_clear(void *);
 static void click_config_provider(void *);
 
-static bool first = true;
-
-
 static void update_speed() {
   static char t[100];
   if (loaded) {
-    snprintf(t, sizeof(t), "Press select to begin! Words per minute: %u", speed);
+    snprintf(t, sizeof(t), "Press select to begin!");
     if (speed == MIN_SPEED - SPEED_SKIP)
       snprintf(t, sizeof(t), "Press select to begin! Line-by-line mode");
   }
   else {
-    snprintf(t, sizeof(t), "Waiting for phone... Words per minute: %u", speed);
+    snprintf(t, sizeof(t), "Waiting for phone... ");
     if (speed == MIN_SPEED - SPEED_SKIP)
       snprintf(t, sizeof(t), "Waiting for phone... Line-by-line mode");
   }
   text_layer_set_text(text_layer, t);
+  static char speed_buf[32];
+  snprintf(speed_buf, sizeof(speed_buf), "Words per minute: %u ", speed); // 10 - decimal; 
+  if (speed == MIN_SPEED - SPEED_SKIP)
+    snprintf(speed_buf, sizeof(speed_buf), "Words per minute: - "); // 10 - decimal; 
+  text_layer_set_text(speed_layer, speed_buf);
 }
 
 static bool display_next_word() {
@@ -71,8 +73,10 @@ static bool display_next_word() {
   APP_LOG(APP_LOG_LEVEL_DEBUG, "PRINTING[%i :]... %s (%g)", word_buf_soft_begin, tmp_buf, time_counter);
   text_layer_set_text(text_layer, tmp_buf);
 
-  static char speed_buf[4];
-  snprintf(speed_buf, sizeof(speed_buf), "%u", speed); // 10 - decimal; 
+  static char speed_buf[32];
+  snprintf(speed_buf, sizeof(speed_buf), "Words per minute: %u ", speed); // 10 - decimal; 
+  if (speed == MIN_SPEED - SPEED_SKIP)
+    snprintf(speed_buf, sizeof(speed_buf), "Words per minute: - "); // 10 - decimal; 
   text_layer_set_text(speed_layer, speed_buf);
 
   // static char progress_buf[20];
@@ -148,12 +152,27 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   if (speed < MAX_SPEED) speed += SPEED_SKIP;
+  else speed = MIN_SPEED - SPEED_SKIP;
   update_speed();
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
-  if (speed > MIN_SPEED-SPEED_SKIP) speed -= SPEED_SKIP;
-  update_speed();
+  // if (speed > MIN_SPEED-SPEED_SKIP) speed -= SPEED_SKIP;
+  // update_speed();
+  DictionaryIterator *iter;
+  app_message_outbox_begin(&iter);
+  Tuplet value = TupletInteger(0, 1);
+  dict_write_tuplet(iter, &value);
+  app_message_outbox_send();
+}
+
+static void out_sent_handler(DictionaryIterator *sent, void *context) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "ACK Success!");
+}
+
+
+static void out_failed_handler(DictionaryIterator *failed, AppMessageResult reason, void *context) {
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "ACK Failed.");
 }
 
 static void click_config_provider(void *context) {
@@ -173,7 +192,7 @@ static void window_load(Window *window) {
   GRect bounds = layer_get_bounds(window_layer);
 
   text_layer = text_layer_create((GRect) { .origin = { 0, 72 }, .size = { bounds.size.w, 40 } });
-  speed_layer = text_layer_create((GRect) { .origin = { 0, 130}, .size = {bounds.size.w, 40} });
+  speed_layer = text_layer_create((GRect) { .origin = {0, 130}, .size = {bounds.size.w, 40} });
 //  progress_layer = text_layer_create((GRect) { .origin = { 0, 10}, .size = {bounds.size.w, 40} });
   update_speed();
   text_layer_set_text_alignment(text_layer, GTextAlignmentCenter);
@@ -187,11 +206,9 @@ static void window_load(Window *window) {
 static void in_received_handler(DictionaryIterator *iter, void *context) {
 
   APP_LOG(APP_LOG_LEVEL_DEBUG, "Received a message!");
-  if(first) {
-    vibes_short_pulse();
-  } else {
-      first = false;
-  }
+  
+  vibes_short_pulse();
+  
   // Check for fields you expect to receive
   Tuple *tuple = dict_read_first(iter);
   do
@@ -251,6 +268,8 @@ static void init(void) {
   app_message_register_inbox_received(in_received_handler);
   app_message_register_inbox_dropped(in_dropped_handler);
   app_message_open(app_message_inbox_size_maximum(), app_message_outbox_size_maximum());
+  app_message_register_outbox_sent(out_sent_handler);
+  app_message_register_outbox_failed(out_failed_handler);
 }
 
 static void deinit(void) {
