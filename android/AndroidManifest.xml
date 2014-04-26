@@ -36,7 +36,7 @@
             	android:resource="@xml/accessibilityservice" />
         </service>
         <service
-            android:name="edu.virginia.cs.va2j.SendToPebbleService">
+            android:name="edu.virginia.cs.va2j.SendToPebbleService" android:exported="false">
             
         </service>
     </application>
