@@ -33,6 +33,9 @@ public class SendToPebbleService extends IntentService {
 	private BroadcastReceiver ack;
 	private BroadcastReceiver nack;
 
+	// Exit flag
+	private long done = 0;
+	
 	public SendToPebbleService() {
 		super("SendToPebbleService");
 	}
@@ -48,6 +51,7 @@ public class SendToPebbleService extends IntentService {
 	protected void onHandleIntent(Intent intent) {
 
 		String notificationText = intent.getStringExtra("notify");
+		notificationText = notificationText.replaceAll("\\s+", " ");
 		final String notify = notificationText;
 		//String 
 
@@ -84,16 +88,26 @@ public class SendToPebbleService extends IntentService {
 				}
 			});
 
+			sendPebbleString(PEBBLE_MESSAGE_WORDS, notify);
+			
 			PebbleKit.registerReceivedDataHandler(this, new PebbleKit.PebbleDataReceiver(app_uuid) {
 				@Override
 				public void receiveData(final Context context, final int transactionId, final PebbleDictionary data) {
 					// Log.i("SendToPebbleService", "Received value=" + data.getUnsignedInteger(0) + " for key: 0");
-					
+					done = data.getInteger(0);
 					PebbleKit.sendAckToPebble(getApplicationContext(), transactionId);
 				}
 			});
-
-			sendPebbleString(PEBBLE_MESSAGE_WORDS, notify);
+			
+			while(done == 0) {
+				try {
+					Thread.sleep(1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+			
 		}
 	}
 
