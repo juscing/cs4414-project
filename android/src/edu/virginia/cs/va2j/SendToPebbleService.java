@@ -35,6 +35,7 @@ public class SendToPebbleService extends IntentService {
 
 	// Exit flag
 	private long done = 0;
+	private int count = 0;
 	
 	public SendToPebbleService() {
 		super("SendToPebbleService");
@@ -99,15 +100,16 @@ public class SendToPebbleService extends IntentService {
 				}
 			});
 			
-			while(done == 0) {
+			while(done == 0 && count < 10) {
 				try {
 					Thread.sleep(1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				count++;
 			}
-			
+			done = 0; count = 0;
 		}
 	}
 
