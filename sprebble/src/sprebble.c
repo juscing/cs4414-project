@@ -99,7 +99,7 @@ static void timer_revert(void *content) {
 
 static void timer_pause(void *content) {
   time_counter += TIMER_REFRESH_SECONDS;
-  APP_LOG(APP_LOG_LEVEL_DEBUG, "REVERTING... (%g)", time_counter);
+  APP_LOG(APP_LOG_LEVEL_DEBUG, "PAUSING... (%g)", time_counter);
   if (time_counter > 60.0 / speed) {
 
 //    window_set_click_config_provider(window, click_config_provider);
@@ -153,7 +153,12 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   if (speed < MAX_SPEED) speed += SPEED_SKIP;
   else speed = MIN_SPEED - SPEED_SKIP;
-  update_speed();
+  
+  static char speed_buf[32];
+  snprintf(speed_buf, sizeof(speed_buf), "Words per minute: %u ", speed); // 10 - decimal; 
+  if (speed == MIN_SPEED - SPEED_SKIP)
+    snprintf(speed_buf, sizeof(speed_buf), "Words per minute: - "); // 10 - decimal; 
+  text_layer_set_text(speed_layer, speed_buf);
 }
 
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
