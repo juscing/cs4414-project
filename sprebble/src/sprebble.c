@@ -153,7 +153,7 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
   if (speed < MAX_SPEED) speed += SPEED_SKIP;
   else speed = MIN_SPEED - SPEED_SKIP;
-  
+
   static char speed_buf[32];
   snprintf(speed_buf, sizeof(speed_buf), "Words per minute: %u ", speed); // 10 - decimal; 
   if (speed == MIN_SPEED - SPEED_SKIP)
@@ -164,11 +164,14 @@ static void up_click_handler(ClickRecognizerRef recognizer, void *context) {
 static void down_click_handler(ClickRecognizerRef recognizer, void *context) {
   // if (speed > MIN_SPEED-SPEED_SKIP) speed -= SPEED_SKIP;
   // update_speed();
-  DictionaryIterator *iter;
-  app_message_outbox_begin(&iter);
-  Tuplet value = TupletInteger(0, 1);
-  dict_write_tuplet(iter, &value);
-  app_message_outbox_send();
+  if(!running)
+  {
+    DictionaryIterator *iter;
+    app_message_outbox_begin(&iter);
+    Tuplet value = TupletInteger(0, 1);
+    dict_write_tuplet(iter, &value);
+    app_message_outbox_send();
+  }
 }
 
 static void out_sent_handler(DictionaryIterator *sent, void *context) {
