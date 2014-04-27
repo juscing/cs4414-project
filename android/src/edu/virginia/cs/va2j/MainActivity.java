@@ -9,6 +9,7 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.support.v13.app.FragmentPagerAdapter;
 import android.os.Bundle;
+import android.support.v4.app.DialogFragment;
 import android.support.v4.view.ViewPager;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -20,6 +21,8 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity implements ActionBar.TabListener {
 
+	private int mStackLevel = 0;
+	
 	/**
 	 * The {@link android.support.v4.view.PagerAdapter} that will provide
 	 * fragments for each of the sections. We use a {@link FragmentPagerAdapter}
@@ -61,7 +64,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 						actionBar.setSelectedNavigationItem(position);
 					}
 				});
-
+		
 		// For each of the sections in the app, add a tab to the action bar.
 		for (int i = 0; i < mSectionsPagerAdapter.getCount(); i++) {
 			// Create a tab with text corresponding to the page title defined by
@@ -72,6 +75,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		
 	}
 
 	@Override
@@ -88,7 +92,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 		// automatically handle clicks on the Home/Up button, so long
 		// as you specify a parent activity in AndroidManifest.xml.
 		int id = item.getItemId();
-		if (id == R.id.action_settings) {
+		if (id == R.id.action_about) {
+			showDialog();
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
@@ -111,6 +116,24 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 	public void onTabReselected(ActionBar.Tab tab,
 			FragmentTransaction fragmentTransaction) {
 	}
+	
+	private void showDialog() {
+	    mStackLevel++;
+
+	    // DialogFragment.show() will take care of adding the fragment
+	    // in a transaction.  We also want to remove any currently showing
+	    // dialog, so make our own transaction and take care of that here.
+	    FragmentTransaction ft = getFragmentManager().beginTransaction();
+	    Fragment prev = getFragmentManager().findFragmentByTag("dialog");
+	    if (prev != null) {
+	        ft.remove(prev);
+	    }
+	    ft.addToBackStack(null);
+
+	    // Create and show the dialog.
+	    AboutDialogFragment newFragment = AboutDialogFragment.newInstance(mStackLevel);
+	    newFragment.show(ft, "dialog");
+	}
 
 	/**
 	 * A {@link FragmentPagerAdapter} that returns a fragment corresponding to
@@ -132,8 +155,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 
 		@Override
 		public int getCount() {
-			// Show 3 total pages.
-			return 3;
+			// Show 2 total pages.
+			return 2;
 		}
 
 		@Override
@@ -149,6 +172,7 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 			}
 			return null;
 		}
+		
 	}
 
 	/**

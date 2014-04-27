@@ -2,10 +2,13 @@
 <resources>
 
     <string name="app_name">Sprebble</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
+    <string name="title_section1">Application Picker</string>
+    <string name="title_section2">Settings</string>
     <string name="title_section3">Section 3</string>
-    <string name="action_settings">Settings</string>
+    <string name="action_about">About</string>
     <string name="service_name">Sprebble Service</string>
+    <string name="application_icon">Application Icon</string>
+    <string name="mode">Mode</string>
+    <string name="about">This app was designed by Alex Aberman, Justin Dao, Justin Ingram, and Vikram Bhasin as part of their final project for CS4414 Operating Systems at the University of Virginia. Inspiration was taken from Pebble Notifier and Zeming Lin\'s Pebble speed reader concept.</string>
 
 </resources>
