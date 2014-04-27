@@ -10,5 +10,7 @@
     <string name="application_icon">Application Icon</string>
     <string name="mode">Mode</string>
     <string name="about">This app was designed by Alex Aberman, Justin Dao, Justin Ingram, and Vikram Bhasin as part of their final project for CS4414 Operating Systems at the University of Virginia. Inspiration was taken from Pebble Notifier and Zeming Lin\'s Pebble speed reader concept.</string>
-
+	<string name="tasker_notice">Please note that the last settings for this application was set by Tasker. Your Tasker settings will overwrite everything you set here.</string>
+	<string name="accessability_error">This application will not work by itself until you have enabled Sprebble Service in the Accessibility settings. We also recommend you turn off the notification types you use with Sprebble in the Pebble app options. Tap here to go to the Accessibility settings!</string>
+	
 </resources>

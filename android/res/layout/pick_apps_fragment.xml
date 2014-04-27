@@ -9,17 +9,19 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true"
-        android:text="Blah3"
-        android:visibility="gone"
         android:background="#F00"
-        android:textColor="#FFF"/>
+        android:text="@string/accessability_error"
+        android:textColor="#FFF"
+        android:visibility="gone" />
+
     <TextView
         android:id="@+id/tvTaskerNotice"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Blah4"
         android:layout_below="@+id/tvAccessibilityError"
+        android:text="@string/tasker_notice"
         android:visibility="gone" />
+
     <TextView
         android:id="@+id/tvMode"
         android:layout_width="wrap_content"
