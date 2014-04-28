@@ -122,8 +122,7 @@ public class PickListFragment extends Fragment {
         }
         if (!accessibilityFound) {
             rootview.findViewById(R.id.tvAccessibilityError).setVisibility(View.VISIBLE);
-            rootview.findViewById(R.id.spMode).setVisibility(View.GONE);
-            rootview.findViewById(R.id.tvMode).setVisibility(View.GONE);
+            //rootview.findViewById(R.id.spMode).setVisibility(View.GONE);
             rootview.findViewById(android.R.id.empty).setVisibility(View.GONE);
             rootview.findViewById(R.id.listPackages).setEnabled(false);
             /*
@@ -134,8 +133,7 @@ public class PickListFragment extends Fragment {
 
         } else {
         	rootview.findViewById(R.id.tvAccessibilityError).setVisibility(View.GONE);
-        	rootview.findViewById(R.id.spMode).setVisibility(View.VISIBLE);
-        	rootview.findViewById(R.id.tvMode).setVisibility(View.VISIBLE);
+        	//rootview.findViewById(R.id.spMode).setVisibility(View.VISIBLE);
         	rootview.findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
         	rootview.findViewById(R.id.listPackages).setEnabled(true);
             /*
