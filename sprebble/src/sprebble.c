@@ -21,6 +21,7 @@ static TextLayer *speed_layer;
 //static TextLayer *progress_layer;
 //static char* cstr[] = {"Select", "Up", "Down"};
 static int speed = SPEED_DEFAULT;
+static int cur_word_length = 0;
 static bool loaded = false;
 static bool running = false;
 static AppTimer * timer;
@@ -72,6 +73,8 @@ static bool display_next_word() {
   tmp_buf[i] = '\0';
   APP_LOG(APP_LOG_LEVEL_DEBUG, "PRINTING[%i :]... %s (%g)", word_buf_soft_begin, tmp_buf, time_counter);
   text_layer_set_text(text_layer, tmp_buf);
+  cur_word_length = i;
+
 
   static char speed_buf[32];
   snprintf(speed_buf, sizeof(speed_buf), "Words per minute: %u ", speed); // 10 - decimal; 
@@ -110,7 +113,7 @@ static void timer_pause(void *content) {
 static void timer_callback(void *context) {
   time_counter += TIMER_REFRESH_SECONDS;
   bool flag = true;
-  if (time_counter > 60.0 / speed) {
+  if (time_counter > cur_word_length * 20.0 / speed) {
     flag = display_next_word();
     time_counter = 0;
   }
@@ -138,6 +141,11 @@ static void select_click_handler(ClickRecognizerRef recognizer, void *context) {
       word_buf_soft_begin = 0;
       display_next_word();
       running = true;
+      DictionaryIterator *iter;
+      app_message_outbox_begin(&iter);
+      Tuplet value = TupletInteger(0, 0);
+      dict_write_tuplet(iter, &value);
+      app_message_outbox_send();
       timer = app_timer_register(TIMER_REFRESH_RATE, timer_callback, NULL);
     }
     else if (!running) {
