@@ -113,7 +113,11 @@ static void timer_pause(void *content) {
 static void timer_callback(void *context) {
   time_counter += TIMER_REFRESH_SECONDS;
   bool flag = true;
-  if (time_counter > cur_word_length * 20.0 / speed) {
+  if (cur_word_length < 5 && time_counter > 60.0 / speed) {
+    flag = display_next_word();
+    time_counter = 0;
+  }
+  else if (time_counter > cur_word_length * 20.0 / speed) {
     flag = display_next_word();
     time_counter = 0;
   }
