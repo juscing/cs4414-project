@@ -81,6 +81,8 @@ public class MainActivity extends Activity implements ActionBar.TabListener {
 					.setText(mSectionsPagerAdapter.getPageTitle(i))
 					.setTabListener(this));
 		}
+		//context setting so can use getPackageManager()
+		
 		
 	}
 
