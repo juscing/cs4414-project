@@ -143,6 +143,7 @@ public class PickListFragment extends Fragment {
         List<PackageInfo> pkgAppsList;
         List<ApplicationInfo> appsList;
         JSONArray jsonRenames;
+        ListView lvPackages;
 
         @Override
         protected void onPreExecute(){
@@ -172,13 +173,12 @@ public class PickListFragment extends Fragment {
             Collections.sort(appsList, comparer);
             selected = new ArrayList<String>();
             String packageList;
-            String packageRenames;
             
                 if(Constants.IS_LOGGABLE){
                     Log.i(Constants.LOG_TAG, "I am pulling from sharedPrefs");
                 }
                 packageList = sharedPreferences.getString(Constants.PREFERENCE_PACKAGE_LIST, "");
-                packageRenames = sharedPreferences.getString(Constants.PREFERENCE_PKG_RENAMES, "[]");
+                //packageRenames = sharedPreferences.getString(Constants.PREFERENCE_PKG_RENAMES, "[]");
             if(Constants.IS_LOGGABLE){
                 Log.i(Constants.LOG_TAG, "Package list is: " + packageList);
             }
@@ -200,7 +200,7 @@ public class PickListFragment extends Fragment {
                 //something went wrong
                 return;
             }
-            rootView.findViewById(android.R.id.empty).setVisibility(View.GONE);
+            getActivity().findViewById.(android.R.id.empty).setVisibility(View.GONE);
             lvPackages.setAdapter(new packageAdapter(PickListFragment.this, appsList
                     .toArray(new ApplicationInfo[appsList.size()]), selected));
 
