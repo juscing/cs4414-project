@@ -71,6 +71,121 @@ public class PickListFragment extends Fragment {
 	}
 	
 	@Override
+	public void onResume() {
+		super.onResume();
+		sharedPreferences = getActivity().getSharedPreferences(Constants.LOG_TAG+"_preferences", getActivity().MODE_MULTI_PROCESS | getActivity().MODE_PRIVATE);
+    	
+    }
+	
+	@Override
+    public void onPause() {
+		super.onPause();
+        save();
+    }
+	
+	@Override
+    public void onSaveInstanceState(Bundle outState) {
+        save();
+        super.onSaveInstanceState(outState);
+    }
+	
+	public void save() {
+        String selectedPackages = "";
+        ArrayList<String> tmpArray = new ArrayList<String>();
+        if (lvpackages == null || lvpackages.getAdapter() == null) {
+            return;
+        }
+        for (String strPackage : ((packageAdapter) lvpackages.getAdapter()).selected) {
+            if (!strPackage.isEmpty()) {
+                if (!tmpArray.contains(strPackage)) {
+                    tmpArray.add(strPackage);
+                    selectedPackages += strPackage + ",";
+                }
+            }
+        }
+        tmpArray.clear();
+        tmpArray = null;
+        if (!selectedPackages.isEmpty()) {
+            selectedPackages = selectedPackages.substring(0, selectedPackages.length() - 1);
+        }
+        /*
+        if (Constants.IS_LOGGABLE) {
+            switch (mMode) {
+            case OFF:
+                Log.i(Constants.LOG_TAG, "Mode is: off");
+                break;
+            case EXCLUDE:
+                Log.i(Constants.LOG_TAG, "Mode is: exclude");
+                break;
+            case INCLUDE:
+                Log.i(Constants.LOG_TAG, "Mode is: include");
+                break;
+            }
+
+            Log.i(Constants.LOG_TAG, "Package list is: " + selectedPackages);
+        }
+		*/
+        //if (mode == Mode.STANDARD) {
+        if(true) {
+            Editor editor = sharedPreferences.edit();
+            //editor.putInt(Constants.PREFERENCE_MODE, mMode.ordinal());
+            editor.putString(Constants.PREFERENCE_PACKAGE_LIST, selectedPackages);
+            //editor.putString(Constants.PREFERENCE_PKG_RENAMES, arrayRenames.toString());
+
+            // we saved via the application, reset the variable if it exists
+            editor.remove(Constants.PREFERENCE_TASKER_SET);
+
+            // clear out legacy preference, if it exists
+            editor.remove(Constants.PREFERENCE_EXCLUDE_MODE);
+
+            // save!
+            editor.commit();
+
+            // notify service via file that it needs to reload the preferences
+            File watchFile = new File(getActivity().getFilesDir() + "PrefsChanged.none");
+            if (!watchFile.exists()) {
+                try {
+                    watchFile.createNewFile();
+                } catch (IOException e) {
+                    // TODO Auto-generated catch block
+                    e.printStackTrace();
+                }
+            }
+            watchFile.setLastModified(System.currentTimeMillis());
+        } /* else if (mode == Mode.LOCALE) {
+            if (!isCanceled()) {
+                final Intent resultIntent = new Intent();
+                final Bundle resultBundle = new Bundle();
+
+                // set the version, title and body
+                resultBundle.putInt(Constants.BUNDLE_EXTRA_INT_VERSION_CODE,
+                        Constants.getVersionCode(getApplicationContext()));
+                resultBundle.putInt(Constants.BUNDLE_EXTRA_INT_TYPE, Constants.Type.SETTINGS.ordinal());
+                resultBundle.putInt(Constants.BUNDLE_EXTRA_INT_MODE, mMode.ordinal());
+                resultBundle.putString(Constants.BUNDLE_EXTRA_STRING_PACKAGE_LIST, selectedPackages);
+                resultBundle.putString(Constants.BUNDLE_EXTRA_STRING_PKG_RENAMES, arrayRenames.toString());
+                String blurb = "";
+                switch (mMode) {
+                case OFF:
+                    blurb = getResources().getStringArray(R.array.mode_choices)[0];
+                    break;
+                case INCLUDE:
+                    blurb = getResources().getStringArray(R.array.mode_choices)[2];
+                    break;
+                case EXCLUDE:
+                    blurb = getResources().getStringArray(R.array.mode_choices)[1];
+                }
+                Log.i(Constants.LOG_TAG, resultBundle.toString());
+
+                resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_BUNDLE, resultBundle);
+                resultIntent.putExtra(com.twofortyfouram.locale.Intent.EXTRA_STRING_BLURB, blurb);
+                setResult(RESULT_OK, resultIntent);
+            }
+        }*/
+
+    }
+	
+	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.pick_apps_fragment, container,
@@ -161,7 +276,7 @@ public class PickListFragment extends Fragment {
                 pm = getActivity().getPackageManager();
                 appsList = pm.getInstalledApplications(0);
             }
-    }
+        }
         
         @Override
         protected Void doInBackground(Void... unused) {
@@ -183,14 +298,14 @@ public class PickListFragment extends Fragment {
                 if(Constants.IS_LOGGABLE){
                     Log.i(Constants.LOG_TAG, "I am pulling from sharedPrefs");
                 }
-                //packageList = sharedPreferences.getString(Constants.PREFERENCE_PACKAGE_LIST, "");
+                packageList = sharedPreferences.getString(Constants.PREFERENCE_PACKAGE_LIST, "");
                 //packageRenames = sharedPreferences.getString(Constants.PREFERENCE_PKG_RENAMES, "[]");
             /*
             if(Constants.IS_LOGGABLE){
                 Log.i(Constants.LOG_TAG, "Package list is: " + packageList);
             }
             */
-            /*
+            
             for (String strPackage : packageList.split(",")) {
                 // only add the ones that are still installed, providing cleanup
                 // and faster speeds all in one!
@@ -200,7 +315,7 @@ public class PickListFragment extends Fragment {
                     }
                 }
             }
-            */
+            
            return null;
         }
 
@@ -276,9 +391,10 @@ public class PickListFragment extends Fragment {
             ApplicationInfo info = packages[position];
 
             String appName = null;
-            viewHolder.renamed = false;
-            /*
+            //viewHolder.renamed = false;
+            
             try {
+            	/*
                 for(int i = 0; i < arrayRenames.length(); i++){
                     if(arrayRenames.getJSONObject(i).getString("pkg").equalsIgnoreCase(info.packageName)){
                         viewHolder.renamed = true;
@@ -286,16 +402,14 @@ public class PickListFragment extends Fragment {
                         viewHolder.textView.setTag(appName);
                         break;
                     }
-                }
-                if(!viewHolder.renamed){
+                }*/
+                //if(!viewHolder.renamed){
                     appName = info.loadLabel(pm).toString();
-                }
+                //}
             } catch (NullPointerException e ){
                 appName = null;
-            } catch (JSONException e){
-                appName = null;
             }
-			*/
+			
             if(appName != null){
                 viewHolder.textView.setText(appName);
             } else {
