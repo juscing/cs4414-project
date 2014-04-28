@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android" >
+    <PreferenceCategory
+            android:key="pref_cat_gen"
+            android:title="@string/pref_cat_gen" >
+        <CheckBoxPreference
+                android:defaultValue="true"
+                android:key="pref_notif_only"
+                android:summary="@string/pref_notif_only_summ"
+                android:title="@string/pref_notif_only" />
+        <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="pref_fetch_notif_extras"
+                android:summary="@string/pref_fetch_notif_extras_summ"
+                android:title="@string/pref_fetch_notif_extras" />
+        <CheckBoxPreference
+                android:defaultValue="false"
+                android:key="pref_no_ongoing_notif"
+                android:summary="@string/pref_no_ongoing_notif_summ"
+                android:title="@string/pref_no_ongoing_notif" />
+        <!-- 
+        <com.dattasmoon.pebble.plugin.ConvertPreference
+                android:defaultValue="[]"
+                android:key="pref_converts"
+                android:summary="@string/pref_convert_summ"
+                android:title="@string/pref_convert" />
+        <com.dattasmoon.pebble.plugin.IgnorePreference
+                android:defaultValue="[]"
+                android:key="pref_ignore"
+                android:summary="@string/pref_ignore_summ"
+                android:title="@string/pref_ignore" /> -->
+
+    </PreferenceCategory>
+</PreferenceScreen>
