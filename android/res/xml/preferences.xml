@@ -9,12 +9,12 @@
                 android:summary="@string/pref_notif_only_summ"
                 android:title="@string/pref_notif_only" />
         <CheckBoxPreference
-                android:defaultValue="false"
+                android:defaultValue="true"
                 android:key="pref_fetch_notif_extras"
                 android:summary="@string/pref_fetch_notif_extras_summ"
                 android:title="@string/pref_fetch_notif_extras" />
         <CheckBoxPreference
-                android:defaultValue="false"
+                android:defaultValue="true"
                 android:key="pref_no_ongoing_notif"
                 android:summary="@string/pref_no_ongoing_notif_summ"
                 android:title="@string/pref_no_ongoing_notif" />
