@@ -11,7 +11,6 @@ import org.json.JSONArray;
 import org.json.JSONException;
 
 import edu.virginia.cs.va2j.Constants.Mode;
-
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.content.SharedPreferences.Editor;
@@ -20,6 +19,7 @@ import android.content.Intent;
 import android.content.pm.ApplicationInfo;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.AsyncTask;
@@ -29,7 +29,10 @@ import android.provider.Settings.SettingNotFoundException;
 import android.text.TextUtils;
 import android.util.Log;
 import android.widget.*;
+import android.widget.CompoundButton.OnCheckedChangeListener;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.MenuInflater;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -76,6 +79,11 @@ public class PickListFragment extends Fragment {
 		lvpackages = (ListView) rootView.findViewById(R.id.listPackages); 
 		//loadApps
 		checkAccessibilityService();
+		
+		if (rootview.findViewById(R.id.listPackages).isEnabled()) {
+            new LoadAppsTask().execute();
+        }
+		
 		rootView.findViewById(R.id.tvAccessibilityError).setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -143,7 +151,7 @@ public class PickListFragment extends Fragment {
         List<PackageInfo> pkgAppsList;
         List<ApplicationInfo> appsList;
         JSONArray jsonRenames;
-        ListView lvPackages;
+        
 
         @Override
         protected void onPreExecute(){
@@ -177,11 +185,14 @@ public class PickListFragment extends Fragment {
                 if(Constants.IS_LOGGABLE){
                     Log.i(Constants.LOG_TAG, "I am pulling from sharedPrefs");
                 }
-                packageList = sharedPreferences.getString(Constants.PREFERENCE_PACKAGE_LIST, "");
+                //packageList = sharedPreferences.getString(Constants.PREFERENCE_PACKAGE_LIST, "");
                 //packageRenames = sharedPreferences.getString(Constants.PREFERENCE_PKG_RENAMES, "[]");
+            /*
             if(Constants.IS_LOGGABLE){
                 Log.i(Constants.LOG_TAG, "Package list is: " + packageList);
             }
+            */
+            /*
             for (String strPackage : packageList.split(",")) {
                 // only add the ones that are still installed, providing cleanup
                 // and faster speeds all in one!
@@ -191,6 +202,7 @@ public class PickListFragment extends Fragment {
                     }
                 }
             }
+            */
            return null;
         }
 
@@ -200,11 +212,11 @@ public class PickListFragment extends Fragment {
                 //something went wrong
                 return;
             }
-            getActivity().findViewById.(android.R.id.empty).setVisibility(View.GONE);
-            lvPackages.setAdapter(new packageAdapter(PickListFragment.this, appsList
+            rootview.findViewById(android.R.id.empty).setVisibility(View.GONE);
+            lvpackages.setAdapter(new packageAdapter(getActivity(), appsList
                     .toArray(new ApplicationInfo[appsList.size()]), selected));
 
-            lvPackages.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
+            lvpackages.setOnCreateContextMenuListener(new View.OnCreateContextMenuListener() {
                 @Override
                 public void onCreateContextMenu(ContextMenu menu, View view, ContextMenu.ContextMenuInfo menuInfo) {
                     AdapterView.AdapterContextMenuInfo contextInfo = (AdapterView.AdapterContextMenuInfo) menuInfo;
@@ -212,19 +224,162 @@ public class PickListFragment extends Fragment {
                     long id = contextInfo.id;
                     // the child view who's info we're viewing (should be equal to v)
                     View v = contextInfo.targetView;
-                    MenuInflater inflater = getMenuInflater();
+                    MenuInflater inflater = getActivity().getMenuInflater();
                     inflater.inflate(R.menu.list_application_menu, menu);
                     ListViewHolder viewHolder = (ListViewHolder) v.getTag();
-                    if(viewHolder.renamed){
-                        menu.findItem(R.id.btnRename).setVisible(false);
-                        menu.findItem(R.id.btnRemoveRename).setVisible(true);
-                    }
 
                 }
             });
 
         }
     }
+	
+	
+	
+	
+	
+	
+	private class packageAdapter extends ArrayAdapter<ApplicationInfo> implements OnCheckedChangeListener, OnClickListener {
+        private final Context       context;
+        private final PackageManager pm;
+        private final ApplicationInfo[] packages;
+        public ArrayList<String>    selected;
+
+        public packageAdapter(Context context, ApplicationInfo[] packages, ArrayList<String> selected) {
+            super(context, R.layout.list_application_item, packages);
+            this.context = context;
+            this.pm = context.getPackageManager();
+            this.packages = packages;
+            this.selected = selected;
+        }
+
+        @Override
+        public View getView(int position, View rowView, ViewGroup parent) {
+            ListViewHolder viewHolder = null;
+            if (rowView == null) {
+                LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                rowView = inflater.inflate(R.layout.list_application_item, null, false);
+
+                viewHolder = new ListViewHolder();
+
+                viewHolder.textView = (TextView) rowView.findViewById(R.id.tvPackage);
+                viewHolder.imageView = (ImageView) rowView.findViewById(R.id.ivIcon);
+                viewHolder.chkEnabled = (CheckBox) rowView.findViewById(R.id.chkEnabled);
+                viewHolder.chkEnabled.setOnCheckedChangeListener(this);
+
+
+                rowView.setOnClickListener(this);
+                //really wish we didn't have to do this, but if we don't the rowview will gobble this event up.
+                rowView.setOnCreateContextMenuListener(null);
+                rowView.setTag(viewHolder);
+            } else {
+                viewHolder = (ListViewHolder) rowView.getTag();
+            }
+            ApplicationInfo info = packages[position];
+
+            String appName = null;
+            viewHolder.renamed = false;
+            /*
+            try {
+                for(int i = 0; i < arrayRenames.length(); i++){
+                    if(arrayRenames.getJSONObject(i).getString("pkg").equalsIgnoreCase(info.packageName)){
+                        viewHolder.renamed = true;
+                        appName = arrayRenames.getJSONObject(i).getString("to");
+                        viewHolder.textView.setTag(appName);
+                        break;
+                    }
+                }
+                if(!viewHolder.renamed){
+                    appName = info.loadLabel(pm).toString();
+                }
+            } catch (NullPointerException e ){
+                appName = null;
+            } catch (JSONException e){
+                appName = null;
+            }
+			*/
+            if(appName != null){
+                viewHolder.textView.setText(appName);
+            } else {
+                viewHolder.textView.setText("");
+            }
+            Drawable icon;
+            try {
+                icon = info.loadIcon(pm);
+            } catch (NullPointerException e){
+                icon = null;
+            }
+            if(icon != null){
+                viewHolder.imageView.setImageDrawable(icon);
+            }
+            viewHolder.chkEnabled.setTag(info.packageName);
+
+            boolean boolSelected = false;
+
+            for (String strPackage : selected) {
+                if (info.packageName.equalsIgnoreCase(strPackage)) {
+
+                    boolSelected = true;
+                    break;
+                }
+            }
+            viewHolder.chkEnabled.setChecked(boolSelected);
+
+            return rowView;
+        }
+
+        @Override
+        public void onCheckedChanged(CompoundButton chkEnabled, boolean newState) {
+
+            String strPackage = (String) chkEnabled.getTag();
+
+            if (strPackage.isEmpty()) {
+                return;
+            }
+            if (Constants.IS_LOGGABLE) {
+                Log.i(Constants.LOG_TAG, "Check changed on " + strPackage);
+            }
+            if (newState) {
+                if (!selected.contains(strPackage)) {
+                    selected.add(strPackage);
+                }
+            } else {
+                while (selected.contains(strPackage)) {
+                    selected.remove(strPackage);
+                }
+            }
+            if (Constants.IS_LOGGABLE) {
+                Log.i(Constants.LOG_TAG, "Selected count is: " + String.valueOf(selected.size()));
+            }
+
+        }
+
+        @Override
+        public void onClick(View rowView) {
+            ((CheckBox) rowView.findViewById(R.id.chkEnabled)).performClick();
+
+        }
+
+    }
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public static class ListViewHolder {
+        public boolean renamed;
+        public TextView  textView;
+        public CheckBox  chkEnabled;
+        public ImageView imageView;
+        public ListViewHolder(){
+            renamed = false;
+        }
+    }
+	
 	public class AppComparator implements Comparator<ApplicationInfo> {
         final PackageManager pm;
         public AppComparator(Context context){
