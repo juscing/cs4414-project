@@ -13,4 +13,33 @@
 	<string name="tasker_notice">Please note that the last settings for this application was set by Tasker. Your Tasker settings will overwrite everything you set here.</string>
 	<string name="accessability_error">This application will not work by itself until you have enabled Sprebble Service in the Accessibility settings. We also recommend you turn off the notification types you use with Sprebble in the Pebble app options. Tap here to go to the Accessibility settings!</string>
 	
+	
+	<string name="pref_notif_screen_on">Notify when screen is on</string>
+    <string name="pref_notif_screen_on_summ">If this is set, then notifications will be sent to the Pebble when the phone\'s screen is on.</string>
+    <string name="pref_cat_dnd">Do Not Disturb Options</string>
+    <string name="pref_cat_gen">General Options</string>
+    <string name="pref_notif_only_summ">If disabled Android Toasts will also be sent to your Pebble</string>
+    <string name="pref_notif_only">Notifications only</string>
+    <string name="pref_fetch_notif_extras_summ">Some older or skinned android handsets modify the notification
+        structure. If you are not getting proper notifications or are crashing, turn this off!
+    </string>
+    <string name="pref_fetch_notif_extras">Fetch detailed notifications</string>
+    <string name="pref_dnd_time_enabled_summ">Allows you to prevent any notifications from being sent from Pebble
+        Notifier to your Pebble
+    </string>
+    <string name="pref_dnd_time_enabled">Quiet time</string>
+    <string name="pref_dnd_time_before_summ">No notifications before this time</string>
+    <string name="pref_dnd_time_before">Quiet time - Not before</string>
+    <string name="pref_dnd_time_after_summ">No notifications after this time</string>
+    <string name="pref_dnd_time_after">Quiet time - Not after</string>
+    <string name="pref_cat_dnd_quiet">Quiet hours</string>
+    <string name="pref_donate_summ">Donations help development so if you like Pebble Notifier, please donate by clicking
+        here.
+    </string>
+	
+     <string name="pref_no_ongoing_notif_summ">Android notifications that have the ongoing flag set are not sent to your
+        Pebble
+    </string>
+    <string name="pref_no_ongoing_notif">Don\'t send ongoing notifications</string>
+    
 </resources>

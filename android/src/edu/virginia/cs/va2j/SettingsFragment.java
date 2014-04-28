@@ -21,7 +21,7 @@ import android.widget.Toast;
 import java.io.File;
 import java.io.IOException;
 
-public class SettingsFragment extends Fragment {
+public class SettingsFragment extends PreferenceFragment {
 	
 	private View rootview;
 	/**
@@ -44,20 +44,21 @@ public class SettingsFragment extends Fragment {
 	public SettingsFragment() {
 	}
 
+	/*
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
 			Bundle savedInstanceState) {
 		View rootView = inflater.inflate(R.layout.settings_fragment, container,
 				false);
 		this.rootview = rootView;
-		rootview.findViewById(R.id.pref_cat_gen).setVisibility(View.VISBILE);
+		//rootview.findViewById(R.string.pref_cat_gen).setVisibility(View.VISIBLE);
     	//rootview.findViewById(R.id.spMode).setVisibility(View.VISIBLE);
-    	rootview.findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
-    	rootview.findViewById(R.id.listPackages).setEnabled(true);
-		
+    	//rootview.findViewById(android.R.id.empty).setVisibility(View.VISIBLE);
+    	//rootview.findViewById(R.id.listPackages).setEnabled(true);
+    	
 		return rootView;
 	}
-	
+	*/
 	 @Override
 	    public void onCreate(Bundle savedInstanceState) {
 	        super.onCreate(savedInstanceState);
@@ -79,9 +80,11 @@ public class SettingsFragment extends Fragment {
 	            editor.commit();
 	            Toast.makeText(getActivity(), "Converted your old settings", Toast.LENGTH_SHORT).show();
 	        }
+	        this.addPreferencesFromResource(R.xml.preferences);
+	        
 	 }
 	        
-	        //addPreferencesFromResource(R.xml.preferences);
+	        
 
 	        
 	    @Override
