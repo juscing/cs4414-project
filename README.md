@@ -5,10 +5,10 @@ Sprebble
 ### Course project for UVA CS 4414 Operating Systems Spring 2014 with David Evans
 
 ### Team Members
-Justin Ingram
-Alex Abramson
-Vikram Bhasin
-Justin Dao
+- Justin Ingram
+- Alex Abramson
+- Vikram Bhasin
+- Justin Dao
 
 ### Goal
 Design a Spritz style app for Pebble for reading notifications. Make reading messages on the Pebble faster and more convenient while eliminating scrolling. The app should allow reading all notifications, including full length text messages and emails on the Pebble quickly, rather than having to scroll through snippets of the message.
